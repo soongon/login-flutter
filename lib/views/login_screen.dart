@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'login_success_screen.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -25,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
-          child: loggedIn ? _buildSuccess() : _buildLoginForm()
+          child: _buildLoginForm()
         ),
       ),
     );
@@ -41,22 +43,25 @@ class _LoginScreenState extends State<LoginScreen> {
   void _validate() {
     final form = _formKey.currentState;
 
-    if (form?.validate() ?? false) {
-      setState(() {
-        loggedIn = true;
-        name = _nameController.text;
-      });
+    if (form?.validate() == false) {
+      return;
     }
 
-  }
-
-  Widget _buildSuccess() {
-    return Column(
-      children: [
-        Icon(Icons.check, color: Colors.orangeAccent,),
-        Text('$name 님 환영합니다!')
-      ],
+    final name = _nameController.text;
+    final email = _emailController.text;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => LoginSuccessScreen(name: name, email: email)
+      )
     );
+
+    // pushReplacement 함수는 현재 화면을 새로운 화면으로 대체 (로그인 화면으로 돌아가기 불가)
+    // Navigator.of(context).pushReplacement(
+    //   MaterialPageRoute(
+    //     builder: (_) => LoginSuccessScreen(name: name, email: email)
+    //   )
+    // );
+
   }
   
   Widget _buildLoginForm() {
